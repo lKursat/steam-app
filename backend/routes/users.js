@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 const Game = require('../models/Game');
+const mongoose = require('mongoose');
 
 // Kullanıcı detayını getir
 router.get('/', async (req, res) => {
@@ -12,16 +13,26 @@ router.get('/', async (req, res) => {
       res.status(500).json({ error: err.message });
     }
   });
- router.get('/:id', async (req, res) => {
-   try {
-     const user = await User.findById(req.params.id);
-     if (!user) return res.status(404).json({ error: 'Kullanıcı bulunamadı' });
-
-     res.json(user);
-   } catch (err) {
-     res.status(500).json({ error: err.message });
-   }
- });
+  router.get('/:id', async (req, res) => {
+    const { id } = req.params;
+  
+    // ✅ ID geçerli mi kontrol et
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'Geçersiz kullanıcı ID' });
+    }
+  
+    try {
+      const user = await User.findOne({ _id: id });
+  
+      if (!user) {
+        return res.status(404).json({ error: 'Kullanıcı bulunamadı' });
+      }
+  
+      res.json(user);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  });
 router.post('/', async (req, res) => {
     try {
       const user = new User(req.body);
