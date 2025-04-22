@@ -11,12 +11,15 @@ app.use(express.json());
 const gameRoutes = require('./routes/games');
 app.use('/api/games', gameRoutes);
 
+const userRoutes = require('./routes/users');
+app.use('/api/users', userRoutes);
+
 // MongoDB Atlas'a bağlan
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('✅ MongoDB Atlas bağlantısı başarılı'))
   .catch((err) => console.error('❌ MongoDB bağlantı hatası:', err));
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(` Sunucu ${PORT} portunda çalışıyor`);
 });

@@ -1,0 +1,79 @@
+const express = require('express');
+const router = express.Router();
+const User = require('../models/User');
+const Game = require('../models/Game');
+
+// Kullanıcı detayını getir
+router.get('/', async (req, res) => {
+    try {
+      const users = await User.find(); // MongoDB'den tüm kullanıcıları al
+      res.json(users);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+ router.get('/:id', async (req, res) => {
+   try {
+     const user = await User.findById(req.params.id);
+     if (!user) return res.status(404).json({ error: 'Kullanıcı bulunamadı' });
+
+     res.json(user);
+   } catch (err) {
+     res.status(500).json({ error: err.message });
+   }
+ });
+router.post('/', async (req, res) => {
+    try {
+      const user = new User(req.body);
+      await user.save();
+      res.status(201).json(user);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+// Kullanıcı oyun yorumu eklesin
+router.post('/:userId/comment/:gameId', async (req, res) => {
+    const { userId, gameId } = req.params;
+    const { comment } = req.body;
+  
+    try {
+      const user = await User.findById(userId);
+      const game = await Game.findById(gameId);
+  
+      if (!user || !game) {
+        return res.status(404).json({ error: 'Kullanıcı veya oyun bulunamadı' });
+      }
+  
+      // Kullanıcı bu oyunu en az 1 saat oynamış mı?
+      const userPlayTimeOnGame = game.comments.find(c => c.userId === userId)?.playTime || 0;
+  
+      if (userPlayTimeOnGame < 1) {
+        return res.status(400).json({ error: 'Yorum yapabilmek için önce bu oyunu oynamalısınız (1 saat minimum).' });
+      }
+  
+      // 1. Kullanıcıya yorumu ekle (varsa güncelle)
+      const existingUserCommentIndex = user.comments.findIndex(c => c.gameName === game.name);
+      if (existingUserCommentIndex !== -1) {
+        user.comments[existingUserCommentIndex].text = comment;
+      } else {
+        user.comments.push({ gameName: game.name, text: comment, playTime: userPlayTimeOnGame });
+      }
+  
+      // 2. Oyuna yorumu ekle (varsa güncelle)
+      const existingGameCommentIndex = game.comments.findIndex(c => c.userId === userId);
+      if (existingGameCommentIndex !== -1) {
+        game.comments[existingGameCommentIndex].comment = comment;
+      } else {
+        game.comments.push({ userId, comment, playTime: userPlayTimeOnGame });
+      }
+  
+      await user.save();
+      await game.save();
+  
+      res.json({ message: 'Yorum başarıyla eklendi' });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+  
+module.exports = router;
