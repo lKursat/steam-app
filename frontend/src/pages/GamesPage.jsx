@@ -11,23 +11,28 @@ function GamesPage() {
   }, []);
 
   return (
-<div className="container mt-5">
-  <h2 className="mb-4">🎮 Oyunlar</h2>
-  <div className="row">
-    {games.map((game) => (
-      <div key={game._id} className="col-md-4 mb-4">
-        <div className="card h-100">
-          <img src={game.photo} className="card-img-top" alt={game.name} />
-          <div className="card-body">
-            <h5 className="card-title">{game.name}</h5>
-            <p className="card-text">Türler: {game.genres.join(', ')}</p>
+    <div style={{ padding: '30px' }}>
+      <h2>🎮 Oyunlar</h2>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
+        {games.map((game) => (
+          <div
+            key={game._id}
+            style={{
+              border: '1px solid #ccc',
+              borderRadius: '10px',
+              padding: '15px',
+              width: '250px',
+              textAlign: 'center',
+              boxShadow: '2px 2px 10px rgba(0,0,0,0.1)'
+            }}
+          >
+            <img src={game.photo} alt={game.name} style={{ width: '100%', borderRadius: '8px' }} />
+            <h3>{game.name}</h3>
+            <p><strong>Tür:</strong> {game.genres.join(', ')}</p>
           </div>
-        </div>
+        ))}
       </div>
-    ))}
-  </div>
-</div>
-
+    </div>
   );
 }
 

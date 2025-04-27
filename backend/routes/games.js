@@ -67,6 +67,19 @@ router.put('/enable-rating/:id', async (req, res) => {
   }
 });
 
+// Belirli bir oyunun detayını getir
+router.get('/:id', async (req, res) => {
+  try {
+    const game = await Game.findById(req.params.id);
+    if (!game) {
+      return res.status(404).json({ error: 'Oyun bulunamadı' });
+    }
+    res.json(game);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 
 // Tüm oyunları getir
