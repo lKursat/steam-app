@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Game = require('../models/Game');
+const User = require('../models/User');
 
 // Oyun Ekle
 router.post('/', async (req, res) => {
@@ -81,27 +82,35 @@ router.get('/:id', async (req, res) => {
 });
 
 // Bir oyuna kullanıcı yorum ve puan ekleme
+// Oyun yorumu ekleme
 router.post('/:id/comment', async (req, res) => {
   try {
+    const { id } = req.params; // Game ID
     const { userId, comment, rating, playTime } = req.body;
-    const game = await Game.findById(req.params.id);
 
-    if (!game) {
-      return res.status(404).json({ error: 'Oyun bulunamadı' });
+    const game = await Game.findById(id);
+    const user = await User.findById(userId);
+
+    if (!game) return res.status(404).json({ error: 'Oyun bulunamadı' });
+    if (!user) return res.status(404).json({ error: 'Kullanıcı bulunamadı' });
+
+    // Kullanıcının ID'si yoksa veya eksikse hata verelim
+    if (!userId) {
+      return res.status(400).json({ error: 'Kullanıcı ID eksik.' });
     }
 
-    // Eğer kullanıcı zaten yorum yapmışsa güncelleyelim
-    const existingCommentIndex = game.comments.findIndex(c => c.userId === userId);
+    // Eğer yorum daha önce yapılmışsa güncelle
+    const existingGameCommentIndex = game.comments.findIndex(c => c.userId?.toString() === userId.toString());
 
-    if (existingCommentIndex !== -1) {
-      game.comments[existingCommentIndex].comment = comment;
-      game.comments[existingCommentIndex].playTime = playTime;
+    if (existingGameCommentIndex !== -1) {
+      game.comments[existingGameCommentIndex].comment = comment;
+      game.comments[existingGameCommentIndex].playTime = playTime;
     } else {
       game.comments.push({ userId, comment, playTime });
     }
 
-    // Eğer kullanıcı zaten puan vermişse güncelleyelim
-    const existingRatingIndex = game.ratings.findIndex(r => r.userId === userId);
+    // Eğer puan daha önce verilmişse güncelle
+    const existingRatingIndex = game.ratings.findIndex(r => r.userId?.toString() === userId.toString());
 
     if (existingRatingIndex !== -1) {
       game.ratings[existingRatingIndex].rating = rating;
@@ -109,13 +118,31 @@ router.post('/:id/comment', async (req, res) => {
       game.ratings.push({ userId, rating });
     }
 
-    await game.save();
+    // Kullanıcının yorumlarına da ekle
+    const existingUserCommentIndex = user.comments.findIndex(c => c.gameName === game.name);
 
-    res.json({ message: 'Yorum ve puan başarıyla eklendi.' });
+    if (existingUserCommentIndex !== -1) {
+      user.comments[existingUserCommentIndex].text = comment;
+      user.comments[existingUserCommentIndex].playTime = playTime;
+    } else {
+      user.comments.push({
+        gameName: game.name,
+        text: comment,
+        playTime
+      });
+    }
+
+    await game.save();
+    await user.save();
+
+    res.status(201).json({ message: 'Yorum ve puan başarıyla eklendi.' });
+
   } catch (err) {
+    console.error('Yorum ekleme hatası:', err);
     res.status(500).json({ error: err.message });
   }
 });
+
 
 //  Yorumları Silme
 

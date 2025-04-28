@@ -6,6 +6,7 @@ import UserPage from './pages/UserPage';
 import GamesPage from './pages/GamesPage';
 import GameDetailPage from './pages/GameDetailPage';
 import LoginPage from './pages/LoginPage';
+import UserProfilePage from './pages/UserProfilePage';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/users" element={<UsersPage />} />
         <Route path="/user/:id" element={<UserPage />} />
         <Route path="/game/:id" element={<GameDetailPage />} />
+        <Route path="/profile/:id" element={<UserProfilePage />} />
       </Routes>
     </Router>
   );
