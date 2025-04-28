@@ -80,6 +80,44 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+// Bir oyuna kullanıcı yorum ve puan ekleme
+router.post('/:id/comment', async (req, res) => {
+  try {
+    const { userId, comment, rating, playTime } = req.body;
+    const game = await Game.findById(req.params.id);
+
+    if (!game) {
+      return res.status(404).json({ error: 'Oyun bulunamadı' });
+    }
+
+    // Eğer kullanıcı zaten yorum yapmışsa güncelleyelim
+    const existingCommentIndex = game.comments.findIndex(c => c.userId === userId);
+
+    if (existingCommentIndex !== -1) {
+      game.comments[existingCommentIndex].comment = comment;
+      game.comments[existingCommentIndex].playTime = playTime;
+    } else {
+      game.comments.push({ userId, comment, playTime });
+    }
+
+    // Eğer kullanıcı zaten puan vermişse güncelleyelim
+    const existingRatingIndex = game.ratings.findIndex(r => r.userId === userId);
+
+    if (existingRatingIndex !== -1) {
+      game.ratings[existingRatingIndex].rating = rating;
+    } else {
+      game.ratings.push({ userId, rating });
+    }
+
+    await game.save();
+
+    res.json({ message: 'Yorum ve puan başarıyla eklendi.' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
 
 
 // Tüm oyunları getir

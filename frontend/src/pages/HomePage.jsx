@@ -8,6 +8,7 @@ function HomePage() {
   const [name, setName] = useState('');
   const [genres, setGenres] = useState('');
   const [photo, setPhoto] = useState('');
+  const [about, setAbout] = useState('');
   const [developer, setDeveloper] = useState('');
   const [releaseDate, setReleaseDate] = useState('');
   const [userName, setUserName] = useState('');
@@ -41,6 +42,7 @@ function HomePage() {
       setName('');
       setGenres('');
       setPhoto('');
+      setAbout('');
       setDeveloper('');
       setReleaseDate('');
       document.getElementById('closeModalButton').click();
@@ -181,7 +183,9 @@ function HomePage() {
             <div className="card h-100">
               <img src={game.photo} className="card-img-top" alt={game.name} style={{ height: '250px', objectFit: 'cover' }} />
               <div className="card-body d-flex flex-column">
-                <h5 className="card-title">{game.name}</h5>
+                <Link to={`/game/${game._id}`} className="text-decoration-none">
+                    <h5 className="card-title">{game.name}</h5>
+                </Link>
                 <p className="card-text">Türler: {game.genres.join(', ')}</p>
 
                 {/* Puanlama Durumu */}
@@ -233,8 +237,12 @@ function HomePage() {
                   <input type="text" className="form-control" value={photo} onChange={(e) => setPhoto(e.target.value)} required />
                 </div>
                 <div className="mb-3">
-                  <label>Geliştirici (opsiyonel)</label>
+                  <label>Geliştirici </label>
                   <input type="text" className="form-control" value={developer} onChange={(e) => setDeveloper(e.target.value)} />
+                </div>
+                <div className="mb-3">
+                  <label>Oyun Hakkında Bilgiler </label>
+                  <input type="text" className="form-control" value={about} onChange={(e) => setAbout(e.target.value)} />
                 </div>
                 <div className="mb-3">
                   <label>Çıkış Tarihi (opsiyonel)</label>
