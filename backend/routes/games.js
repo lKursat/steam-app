@@ -117,6 +117,52 @@ router.post('/:id/comment', async (req, res) => {
   }
 });
 
+//  Yorumları Silme
+
+router.delete('/:gameId/comment/:userId', async (req, res) => {
+  try {
+    const { gameId, userId } = req.params;
+    const game = await Game.findById(gameId);
+
+    if (!game) return res.status(404).json({ error: 'Oyun bulunamadı' });
+
+    game.comments = game.comments.filter(c => c.userId !== userId);
+    game.ratings = game.ratings.filter(r => r.userId !== userId);
+
+    await game.save();
+    res.json({ message: 'Yorum ve puan silindi.' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+//Yorum Güncelleme 
+
+router.put('/:gameId/comment/:userId', async (req, res) => {
+  try {
+    const { gameId, userId } = req.params;
+    const { comment, rating, playTime } = req.body;
+    const game = await Game.findById(gameId);
+
+    if (!game) return res.status(404).json({ error: 'Oyun bulunamadı' });
+
+    const userComment = game.comments.find(c => c.userId === userId);
+    const userRating = game.ratings.find(r => r.userId === userId);
+
+    if (userComment) {
+      userComment.comment = comment;
+      userComment.playTime = playTime;
+    }
+    if (userRating) {
+      userRating.rating = rating;
+    }
+
+    await game.save();
+    res.json({ message: 'Yorum ve puan güncellendi.' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 
 
