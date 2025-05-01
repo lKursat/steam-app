@@ -7,6 +7,7 @@ import GamesPage from './pages/GamesPage';
 import GameDetailPage from './pages/GameDetailPage';
 import LoginPage from './pages/LoginPage';
 import UserProfilePage from './pages/UserProfilePage';
+import './App.css';
 
 function App() {
   return (

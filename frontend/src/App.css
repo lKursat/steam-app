@@ -1,3 +1,40 @@
+/* App.css */
+
+body {
+  background-color: #121212 !important;
+  color: #e0e0e0 !important;
+}
+
+.card {
+  background-color: #1e1e1e !important;
+  border: none;
+  color: #fff !important;
+  box-shadow: 0 0 10px rgba(0,0,0,0.4);
+}
+
+.navbar {
+  background-color: #000 !important;
+}
+
+.btn {
+  font-weight: bold;
+}
+
+.card-title {
+  color: #ffffff !important;
+}
+
+.card-text {
+  color: #cccccc !important;
+}
+
+.list-unstyled li:hover {
+  background-color: #2a2a2a;
+  transition: background-color 0.3s;
+}
+
+
+
 .App {
   text-align: center;
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link,useParams } from 'react-router-dom';
 import axios from 'axios';
 
 function UserProfilePage() {
@@ -38,6 +38,17 @@ function UserProfilePage() {
   };
 
   return (
+    <>
+  {/* Navbar */}
+    <nav className="navbar navbar-expand-lg navbar-dark bg-black py-2">
+      <div className="container-fluid d-flex justify-content-between align-items-center">
+    
+              {/* Orta - Logo */}
+              <div className="mx-3 text-center">
+              <Link to="/" className="navbar-brand">
+                <img src="/logo.png" alt="Site Logosu" width="200" height="50" className="d-inline-block align-top" />
+              </Link>
+            </div>
     <div className="container mt-5">
       {/* Kullanıcı Bilgisi */}
       <div className="text-center mb-5">
@@ -107,6 +118,9 @@ function UserProfilePage() {
         )}
       </div>
     </div>
+    </div>
+    </nav>
+   </>
   );
 }
 
