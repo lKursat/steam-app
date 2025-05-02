@@ -100,8 +100,13 @@ function LoginPage() {
                     ))}
                   </select>
                 </div>
-  
-                {/* ...diğer kodlar aynı */}
+                <button 
+                onClick={handleLogin} 
+                className="btn btn-primary w-100 py-3 fw-bold hover-effect"
+              >
+                <i className="bi bi-box-arrow-in-right me-2"></i>
+                Giriş Yap
+              </button>
               </div>
             </div>
           </div>
