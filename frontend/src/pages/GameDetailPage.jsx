@@ -140,8 +140,8 @@ function GameDetailPage() {
       <div className="detail-header"><h2> Oyun Hakkında</h2>
       <p>{game.optionalFields?.about || 'Açıklama yok.'}</p></div>
 
-      <div className="detail-section-title">⭐ Ortalama Puan</div>
-      <h4 className="text-warning">{averageRating}</h4>
+      <div className="detail-header"> <h2> Ortalama Puan</h2>
+      <h4 className="text-warning">{averageRating} ⭐</h4></div>
     
           {/* Yorumlar */}
           <div className="mt-5">

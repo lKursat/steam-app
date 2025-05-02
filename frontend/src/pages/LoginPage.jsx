@@ -23,41 +23,91 @@ function LoginPage() {
 
   const handleLogin = () => {
     if (!selectedUserId) {
-      Swal.fire('Uyarı', 'Lütfen bir kullanıcı seçin!', 'warning');
+      Swal.fire({
+        icon: 'warning',
+        title: 'Uyarı',
+        text: 'Lütfen bir kullanıcı seçin!',
+        background: '#1a1a1a',
+        color: 'white',
+        confirmButtonColor: '#0d6efd'
+      });
       return;
     }
-    // Kullanıcıyı LocalStorage'a kaydet
+    
     localStorage.setItem('loggedInUserId', selectedUserId);
-    Swal.fire('Başarılı', 'Giriş yapıldı!', 'success').then(() => {
-      navigate('/'); // Ana sayfaya yönlendir
+    Swal.fire({
+      icon: 'success',
+      title: 'Başarılı',
+      text: 'Giriş yapıldı!',
+      background: '#1a1a1a',
+      color: 'white',
+      confirmButtonColor: '#0d6efd'
+    }).then(() => {
+      navigate('/');
     });
   };
 
-  return (
-    <div className="container mt-5">
-      <h2 className="mb-4">🔐 Kullanıcı Girişi</h2>
-
-      <div className="mb-3">
-        <label>Kullanıcı Seçin:</label>
-        <select
-          className="form-select"
-          value={selectedUserId}
-          onChange={(e) => setSelectedUserId(e.target.value)}
-        >
-          <option value="">-- Seçiniz --</option>
-          {users.map((user) => (
-            <option key={user._id} value={user._id}>
-              {user.name}
-            </option>
-          ))}
-        </select>
+    return (
+      <div className="bg-dark text-light min-vh-100 d-flex align-items-center">
+        <div className="container">
+          <div className="row justify-content-center">
+            <div className="col-md-8 col-lg-6">
+              
+              {/* Login Card */}
+              <div className="glassmorphism-card p-5 rounded-4 shadow-lg">
+                
+                {/* Logo Eklendi */}
+                <div className="text-center mb-4">
+                  <img
+                    src="/logo.png"
+                    alt="Site Logosu"
+                    style={{ 
+                      height: '80px',
+                      filter: 'brightness(0.9) drop-shadow(0 0 8px rgba(255,255,255,0.2))'
+                    }}
+                    className="mb-3"
+                  />
+                </div>
+  
+                <div className="text-center mb-5">
+                  <i className="bi bi-person-circle display-1 text-primary mb-3"></i>
+                  <h1 className="h2 fw-bold mb-3">Hesabınıza Giriş Yapın</h1>
+                  <p className="text-muted-white">Lütfen listeden kullanıcınızı seçin</p>
+                </div>
+  
+                <div className="mb-4">
+                  <label className="form-label text-light mb-3 fs-5">
+                    <i className="bi bi-person-fill me-2"></i>
+                    Kullanıcı Seçin
+                  </label>
+                  <select
+                    className="form-select bg-dark text-light border-secondary py-3 custom-select"
+                    value={selectedUserId}
+                    onChange={(e) => setSelectedUserId(e.target.value)}
+                    style={{ fontSize: '1.1rem' }}
+                  >
+                    <option value="" className="bg-secondary text-light">
+                      -- Seçiniz --
+                    </option>
+                    {users.map((user) => (
+                      <option 
+                        key={user._id} 
+                        value={user._id}
+                        className="bg-dark text-light hover-option"
+                      >
+                        {user.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+  
+                {/* ...diğer kodlar aynı */}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-
-      <button onClick={handleLogin} className="btn btn-primary">
-        Giriş Yap
-      </button>
-    </div>
-  );
-}
+    );
+  }
 
 export default LoginPage;

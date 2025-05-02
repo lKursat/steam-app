@@ -23,5 +23,3 @@ const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(` Sunucu ${PORT} portunda çalışıyor`);
 });
-
-import 'bootstrap/dist/css/bootstrap.min.css';
