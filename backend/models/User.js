@@ -11,14 +11,9 @@ const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   photo: { type: String },
   about: { type: String },
-  comments: [commentSchema],
-  favorites: {
-    type: [mongoose.Schema.Types.ObjectId],
-    ref: 'Game',
-    default: []
-  },
-  timestamps: true
-});
+  favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Game' }],
+  comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }]
+}, { timestamps: true });
 
 const User = mongoose.model('User', userSchema);
 

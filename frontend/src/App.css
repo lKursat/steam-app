@@ -399,6 +399,19 @@ body {
   background-color: #0d6efd !important;
 }
 
+.row.flex-nowrap {
+  scrollbar-width: thin;
+  scrollbar-color: #666 transparent;
+}
+.row.flex-nowrap::-webkit-scrollbar {
+  height: 6px;
+}
+.row.flex-nowrap::-webkit-scrollbar-thumb {
+  background-color: #666;
+  border-radius: 10px;
+}
+
+
 .App {
   text-align: center;
 }
