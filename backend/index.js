@@ -23,22 +23,3 @@ const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(` Sunucu ${PORT} portunda çalışıyor`);
 });
-// Geçici test kodu
-/*
-const Game = require('./models/Game');
-
-const testAdd = async () => {
-  const newGame = new Game({
-    name: 'Test Game',
-    genres: ['Action'],
-    photo: 'https://example.com/test.jpg',
-    playTime: 0,
-    optionalFields: { developer: 'Test Dev' }
-  });
-
-  await newGame.save();
-  console.log('Test oyunu eklendi');
-};
-
-testAdd();
-*/

@@ -16,13 +16,12 @@ router.get('/', async (req, res) => {
   router.get('/:id', async (req, res) => {
     const { id } = req.params;
   
-    // ✅ ID geçerli mi kontrol et
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ error: 'Geçersiz kullanıcı ID' });
     }
   
     try {
-      const user = await User.findOne({ _id: id });
+      const user = await User.findById(id).populate('favorites'); // <-- FAVORİLERİ GETİRİYORUZ
   
       if (!user) {
         return res.status(404).json({ error: 'Kullanıcı bulunamadı' });
@@ -33,6 +32,18 @@ router.get('/', async (req, res) => {
       res.status(500).json({ error: err.message });
     }
   });
+  
+
+// Örnek Express route
+router.get('/users/:id', async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id).populate('favorites');
+      res.json(user);
+    } catch (err) {
+      res.status(500).json({ error: 'Kullanıcı alınamadı' });
+    }
+  });
+  
 router.post('/', async (req, res) => {
     try {
       const user = new User(req.body);
@@ -86,5 +97,56 @@ router.post('/:userId/comment/:gameId', async (req, res) => {
       res.status(500).json({ error: err.message });
     }
   });
+
+  // Favoriye ekleme
+router.post('/:userId/favorites/:gameId', async (req, res) => {
+    try {
+      const { userId, gameId } = req.params;
+      const user = await User.findById(userId);
+  
+      if (!user) {
+        return res.status(404).json({ error: 'Kullanıcı bulunamadı.' });
+      }
+  
+      if (!user.favorites) {
+        user.favorites = []; // Eğer yoksa boş bir liste başlat
+      }
+  
+      const isAlreadyFavorited = user.favorites.some(favId => favId.toString() === gameId);
+  
+      if (!isAlreadyFavorited) {
+        user.favorites.push(gameId);
+        await user.save();
+      }
+  
+      res.json({ message: 'Oyun favorilere eklendi.' });
+    } catch (err) {
+      console.error('Favori ekleme hatası:', err);
+      res.status(500).json({ error: err.message });
+    }
+  });
+  
+  
+  // Favori Çıkar
+  router.delete('/:userId/favorites/:gameId', async (req, res) => {
+    try {
+      const { userId, gameId } = req.params;
+      const user = await User.findById(userId);
+  
+      if (!user) {
+        return res.status(404).json({ error: 'Kullanıcı bulunamadı.' });
+      }
+  
+      user.favorites = user.favorites.filter(favId => favId.toString() !== gameId);
+      await user.save();
+  
+      res.json({ message: 'Oyun favorilerden çıkarıldı.' });
+    } catch (err) {
+      console.error('Favori çıkarma hatası:', err);
+      res.status(500).json({ error: err.message });
+    }
+  });
+  
+  
   
 module.exports = router;

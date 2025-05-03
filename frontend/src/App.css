@@ -1,3 +1,417 @@
+/* App.css */
+
+body {
+  background-color: #121212 !important;
+  color: #e0e0e0 !important;
+}
+
+.card {
+  background-color: #1e1e1e !important;
+  border: none;
+  color: #fff !important;
+  box-shadow: 0 0 10px rgba(0,0,0,0.4);
+}
+
+.navbar {
+  background-color: #000 !important;
+}
+
+.btn {
+  font-weight: bold;
+}
+
+.card-title {
+  color: #ffffff !important;
+}
+
+.card-text {
+  color: #cccccc !important;
+}
+
+.list-unstyled li:hover {
+  background-color: #2a2a2a;
+  transition: background-color 0.3s;
+}
+.btn-outline-primary:hover {
+  background-color: #0d6efd;
+  color: white;
+}
+.btn-outline-light:hover {
+  background-color: white;
+  color: black;
+}
+
+.game-card {
+  position: relative;
+  border-radius: 8px;
+  transition: all 0.3s ease-in-out;
+  overflow: hidden;
+}
+.card-slide-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.85);
+  padding: 12px;
+  transform: translateY(100%);
+  opacity: 0;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.game-card:hover .card-slide-content {
+  transform: translateY(0%);
+  opacity: 1;
+}
+.card-content {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transform: translateY(100%);
+  background: rgba(0, 0, 0, 0.85);
+  padding: 12px;
+  font-size: 0.9rem;
+  opacity: 0;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+  z-index: 1;
+}
+.card-content p {
+  margin: 0;
+  max-height: 50px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+
+.game-card:hover .card-content {
+  transform: translateY(0%);
+  opacity: 1;
+}
+
+/* Kart başlıkları (isim + tür) */
+.card-meta {
+  transition: transform 0.3s ease;
+  z-index: 2;
+  position: relative;
+  padding: 10px;
+  background-color: transparent;
+}
+
+.game-card:hover .card-meta {
+  transform: translateY(-60px);
+}
+
+/* Açıklama yazısı */
+.card-description p {
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Kart üzerindeki ikonlar (çöp ve kalp) */
+.card-icons {
+  z-index: 3;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.game-card:hover .card-icons {
+  opacity: 1;
+}
+
+
+.icon-btn {
+  border: none;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 6px 10px;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  transition: background-color 0.2s;
+}
+
+.icon-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.genre-filter {
+  list-style: none;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.genre-item {
+  margin-bottom: 6px !important;
+  padding: 10px;
+  background-color: #121212 !important;
+  color: #ccc !important;
+  text-align: center;
+  border-radius: 6px;
+  border: 1px solid #333;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.genre-item:hover {
+  background-color: #0d6efd !important;
+  color: #fff !important;
+}
+
+
+.genre-item.active {
+  background-color: #0d6efd !important;
+  color: white !important;
+  font-weight: bold;
+  box-shadow: 0 0 10px rgba(13, 110, 253, 0.5);
+}
+
+.genre-item.reset {
+  background-color: #212529 !important;
+  color: #bbb !important;
+  font-style: italic;
+}
+
+.search-icon {
+  font-size: 1.2rem;
+  pointer-events: none;
+  z-index: 2;
+}
+.search-box {
+  border-radius: 8px;
+  padding: 12px;
+  background-color: #1e1e1e;
+  color: white;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid #333;
+}
+
+.search-box::placeholder {
+  color: #bbb !important;
+  opacity: 1 !important;
+  font-style: italic;
+}
+
+
+.search-box:focus {
+  outline: none;
+  border-color: #0d6efd;
+  box-shadow: 0 0 8px rgba(13, 110, 253, 0.5);
+  background-color: #151515;
+}
+
+/* Scrollbar genel yapı */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track (arka plan) */
+::-webkit-scrollbar-track {
+  background: #1e1e1e;
+}
+
+/* Scrollbar Thumb */
+::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 8px;
+  border: 2px solid #1e1e1e;
+}
+
+/* Hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #0d6efd;
+}
+
+.animated-btn {
+  background-color: #002d8f;
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 30px;
+  font-size: 1.2rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-label {
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: max-width 0.4s ease, opacity 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.animated-btn:hover .btn-label {
+  max-width: 100px;
+  opacity: 1;
+}
+
+.animated-btn:hover {
+  padding-right: 18px;
+}
+
+.profile-hover-link {
+  position: relative;
+  background-color: #002d8f;
+  padding: 1px 4px;
+  border-radius: 44px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  max-width: 40px;
+}
+
+.profile-hover-link:hover {
+  max-width: 200px;
+  padding-right: 16px;
+}
+
+.profile-image {
+  width: 36px;
+  height: 36px;
+  border-radius: 10%;
+  object-fit: cover;
+  object-position: center;
+  overflow: hidden;
+  background-color: #ccc;
+  flex-shrink: 0;
+}
+
+
+.profile-label {
+  white-space: nowrap;
+  overflow: hidden;
+  opacity: 0;
+  max-width: 0;
+  transition: all 0.3s ease;
+  color: white;
+}
+
+.profile-hover-link:hover .profile-label {
+  max-width: 150px;
+  opacity: 1;
+}
+
+.detail-header {
+  background-color: #1a1a1a;
+  color: white;
+  padding: 20px 30px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px #000;
+}
+
+.detail-header h2 {
+  color: #00bfff;
+  font-weight: bold;
+}
+
+.detail-section-title {
+  color: #00ffaa;
+  font-size: 1.2rem;
+  margin-top: 1.5rem;
+}
+
+.user-card {
+  backdrop-filter: blur(6px);
+  background-color: rgba(30, 30, 30, 0.85);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.user-card:hover {
+  transform: scale(1.01);
+  /* transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6); */
+  box-shadow: 0 0 20px rgba(0, 123, 255, 0.2);
+}
+
+.profile-pic-wrapper img {
+  transition: transform 0.3s ease-in-out;
+}
+
+.profile-pic-wrapper:hover img {
+  transform: scale(1.05);
+}
+
+.game-favorite-card {
+  transition: transform 0.3s ease;
+}
+.game-favorite-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+}
+
+/* Glassmorphism efekti */
+.glassmorphism-card {
+  background: rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Hover efekti */
+.hover-effect {
+  transition: all 0.3s ease;
+}
+
+.hover-effect:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3) !important;
+}
+
+/* Select elementi özelleştirmeleri */
+.form-select:focus {
+  border-color: #0d6efd !important;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+}
+
+/* Scrollbar özelleştirme (isteğe bağlı) */
+::-webkit-scrollbar {
+  width: 8px;
+  background-color: #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #0d6efd;
+  border-radius: 4px;
+}
+
+/* Özel Select Stili */
+.custom-select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='%23ffffff' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 0.75rem center !important;
+  background-size: 16px 12px !important;
+}
+
+/* Hover Efekti */
+.hover-option:hover {
+  background-color: #2d2d2d !important;
+  color: #fff !important;
+}
+
+/* Seçili Öğe Stili */
+.custom-select option:checked {
+  background-color: #0d6efd !important;
+}
+
+.row.flex-nowrap {
+  scrollbar-width: thin;
+  scrollbar-color: #666 transparent;
+}
+.row.flex-nowrap::-webkit-scrollbar {
+  height: 6px;
+}
+.row.flex-nowrap::-webkit-scrollbar-thumb {
+  background-color: #666;
+  border-radius: 10px;
+}
+
+
 .App {
   text-align: center;
 }
