@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 
 const gameSchema = new mongoose.Schema({
-  name: String,
+  name: { type: String, required: true },
   genres: [String],
   photo: String,
   optionalFields: Object,
@@ -24,5 +24,5 @@ const gameSchema = new mongoose.Schema({
   ]
 });
 
-module.exports = mongoose.model('Game', gameSchema);
+module.exports = mongoose.models.Game || mongoose.model('Game', gameSchema);
 

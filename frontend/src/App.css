@@ -411,6 +411,26 @@ body {
   border-radius: 10px;
 }
 
+.badge.bg-info {
+  background-color: rgba(23, 162, 184, 0.2) !important;
+  color: #17a2b8 !important;
+  border: 1px solid #17a2b8;
+}
+
+.border-secondary {
+  border-color: rgba(255,255,255,0.1) !important;
+}
+
+/* Resim hover efekti */
+.glassmorphism-card img {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glassmorphism-card:hover img {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(23, 162, 184, 0.3);
+}
+
 
 .App {
   text-align: center;

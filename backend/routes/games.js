@@ -110,7 +110,7 @@ router.get('/:id', async (req, res) => {
 // POST /games/:id/comment
 router.post('/:id/comment', async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.params; // Oyun ID'si
     const { userId, comment, rating, playTime } = req.body;
 
     const game = await Game.findById(id);
@@ -120,7 +120,7 @@ router.post('/:id/comment', async (req, res) => {
       return res.status(404).json({ error: 'Oyun veya kullanıcı bulunamadı!' });
     }
 
-    // Game tarafına yorum ve puan ekle
+    // Game içindeki yorum ve puanı güncelle (varsa)
     const existingGameCommentIndex = game.comments.findIndex(c => c.userId?.toString() === userId);
     if (existingGameCommentIndex !== -1) {
       game.comments[existingGameCommentIndex] = { userId, comment, playTime };
@@ -135,15 +135,19 @@ router.post('/:id/comment', async (req, res) => {
       game.ratings.push({ userId, rating });
     }
 
-    // Comment modeline ekle
+    // 🎯 Comment modeline ekle
     const newComment = new Comment({
-      gameName: game.name,
+      userId: user._id,
+      gameId: game._id,
+      gameName: game.name, // bu oyun bilgisi UserProfile'da görünecek
       text: comment,
-      rating: rating,
-      playTime: playTime
+      rating,
+      playTime
     });
 
     await newComment.save();
+
+    // Kullanıcının comment listesine ekle
     user.comments.push(newComment._id);
 
     // Kaydet

@@ -192,27 +192,76 @@ function UserProfilePage() {
   </div>
 </div>
 
-    {/* Yorumlar */}
-    <div className="container mt-5">
-      <h4 className="text-light mb-4">Yorumlar</h4>
-      {user.comments && user.comments.length > 0 ? (
-        user.comments.map((comment, index) => (
-          <div
-            key={index}
-            className="card bg-dark text-light shadow-sm mb-3 p-3 rounded-4"
-            style={{ borderLeft: '5px solid #17a2b8' }}
-          >
-            <div className="d-flex justify-content-between">
-              <strong className="text-info">{comment.userName || 'Kullanıcı'}</strong>
-              <span className="text-muted small">{comment.playTime} saat</span>
+{/* Yorumlar */}
+<div className="container mt-5">
+  <h4 className="text-info mb-4 border-bottom border-secondary pb-2">
+    <i className="bi bi-chat-square-text-fill me-2"></i>
+    Kullanıcı Yorumları
+  </h4>
+  
+  <div className="row row-cols-1 row-cols-lg-2 g-4">
+    {user.comments.map((comment, index) => (
+      <div key={index} className="col">
+        <div className="glassmorphism-card p-4 rounded-4 h-100"
+             style={{
+               borderLeft: '4px solid #17a2b8',
+               transition: 'transform 0.3s ease'
+             }}
+             onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
+             onMouseLeave={(e) => e.currentTarget.style.transform = 'none'}>
+          
+          {/* Üst Bilgi */}
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <div className="d-flex align-items-center gap-2">
+              <i className="bi bi-controller fs-5 text-info"></i>
+              <h5 className="mb-0 text-light">{comment.gameName || 'Bilinmeyen Oyun'}</h5>
             </div>
-            <p className="mt-2 mb-0 fst-italic text-light">{comment.comment}</p>
+            <span className="badge bg-info rounded-pill">
+              <i className="bi bi-clock-history me-2"></i>
+              {comment.playTime} saat
+            </span>
           </div>
-        ))
-      ) : (
-        <p className="text-secondary">Henüz yorum yapılmamış.</p>
-      )}
+
+          {/* Yorum İçeriği */}
+          <div className="d-flex gap-3">
+            <div className="border-start border-info ps-3">
+              <p className="mb-0 text-light fst-italic">
+                "{comment.text}"
+              </p>
+            </div>
+          </div>
+
+          {/* Tarih ve Puan */}
+          {comment.date && (
+            <div className="mt-3 text-end">
+              <small className="text-muted">
+                {new Date(comment.date).toLocaleDateString('tr-TR', {
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric'
+                })}
+              </small>
+              {comment.rating && (
+                <span className="ms-2 text-warning">
+                  {Array.from({ length: comment.rating }).map((_, i) => (
+                    <i key={i} className="bi bi-star-fill"></i>
+                  ))}
+                </span>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    ))}
+  </div>
+
+  {user.comments.length === 0 && (
+    <div className="text-center py-5">
+      <i className="bi bi-chat-square-text display-5 text-secondary mb-3"></i>
+      <p className="text-muted">Henüz yorum bulunmamaktadır.</p>
     </div>
+  )}
+</div>
 
 
       {/* Footer */}

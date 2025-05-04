@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require('../models/User');
 const Game = require('../models/Game');
 const mongoose = require('mongoose');
+const Comment = require('../models/Comment');
 
 // Kullanıcı detayını getir
 router.get('/', async (req, res) => {
@@ -21,29 +22,45 @@ router.get('/', async (req, res) => {
     }
   
     try {
-      const user = await User.findById(id).populate('favorites'); // <-- FAVORİLERİ GETİRİYORUZ
+      const user = await User.findById(id)
+        .populate('favorites')
+        .populate({
+          path: 'comments',
+          model: 'Comment', // Buradaki model adı Comment model dosyanla birebir aynı olmalı
+        });
   
       if (!user) {
         return res.status(404).json({ error: 'Kullanıcı bulunamadı' });
       }
   
+      console.log("Yorumlar (populated):", user.comments); // Bunu ekle kontrol için
       res.json(user);
     } catch (err) {
       res.status(500).json({ error: err.message });
     }
   });
   
+  
 
 // Örnek Express route
-router.get('/users/:id', async (req, res) => {
-    try {
-        const user = await User.findById(req.params.id).populate('favorites');
-      res.json(user);
-    } catch (err) {
-      res.status(500).json({ error: 'Kullanıcı alınamadı' });
-    }
-  });
-  
+// routes/users.js
+router.get('/:id', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id)
+      .populate({
+        path: 'comments',
+        populate: {
+          path: 'gameId',
+          model: 'Game'
+        }
+      });
+    res.json(user);
+  } catch (err) {
+    console.error('Kullanıcı verisi alınamadı:', err);
+    res.status(500).json({ message: 'Sunucu hatası' });
+  }
+});
+
 router.post('/', async (req, res) => {
     try {
       const user = new User(req.body);
@@ -139,8 +156,5 @@ router.delete('/:userId/favorites/:gameId', async (req, res) => {
     res.status(500).json({ error: 'Favoriden çıkarma başarısız' });
   }
 });
-
-  
-  
   
 module.exports = router;
