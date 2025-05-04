@@ -65,7 +65,7 @@ function HomePage() {
   const handleLogout = () => {
     localStorage.removeItem('loggedInUserId');
     setLoggedInUser(null);
-    Swal.fire('Çıkış Yapıldı', '', 'success').then(() => navigate('/'));
+    Swal.fire('Successfully logged out.', '', 'success').then(() => navigate('/'));
   };
 
   const handleSubmit = async (e) => {
@@ -85,10 +85,10 @@ function HomePage() {
       setReleaseDate('');
       document.getElementById('closeModalButton').click();
       fetchGames();
-      Swal.fire('Başarılı!', 'Oyun eklendi.', 'success');
+      Swal.fire('Success!', 'Game Added.', 'success');
     } catch (error) {
-      console.error('Oyun ekleme hatası:', error);
-      Swal.fire('Hata!', 'Oyun eklenemedi.', 'error');
+      console.error('Game adding error:', error);
+      Swal.fire('Error!', 'Game is not Added.', 'error');
     }
   };
 
@@ -106,12 +106,12 @@ function HomePage() {
       document.getElementById('closeUserModalButton').click();
       Swal.fire({
         title: 'Başarılı!',
-        text: 'Kullanıcı başarıyla eklendi.',
+        text: 'User added successfully.',
         icon: 'success',
         confirmButtonText: 'Tamam'
       });
     } catch (error) {
-      console.error('Kullanıcı ekleme hatası:', error);
+      console.error('Error adding user', error);
       Swal.fire({
         title: 'Hata!',
         text: 'Kullanıcı eklenemedi.',
@@ -127,39 +127,17 @@ function HomePage() {
       try {
         await axios.delete(`${process.env.REACT_APP_API_URL}/games/${id}`);
         fetchGames();
-        Swal.fire('Başarılı!', 'Oyun silindi.', 'success');
+        Swal.fire('Success!', 'Game Deleted.', 'success');
       } catch (error) {
-        console.error('Oyun silme hatası:', error);
-        Swal.fire('Hata!', 'Oyun silinemedi.', 'error');
+        console.error('Game Delete Error:', error);
+        Swal.fire('Warning!', 'Game is not Deleted.', 'error');
       }
-    }
-  };
-
-  const handleDisableRating = async (id) => {
-    try {
-      await axios.put(`${process.env.REACT_APP_API_URL}/games/disable-rating/${id}`);
-      fetchGames();
-      Swal.fire('Başarılı!', 'Puanlama devre dışı bırakıldı.', 'success');
-    } catch (error) {
-      console.error('Puan kapatma hatası:', error);
-      Swal.fire('Hata!', 'İşlem başarısız.', 'error');
-    }
-  };
-
-  const handleEnableRating = async (id) => {
-    try {
-      await axios.put(`${process.env.REACT_APP_API_URL}/games/enable-rating/${id}`);
-      fetchGames();
-      Swal.fire('Başarılı!', 'Puanlama aktifleştirildi.', 'success');
-    } catch (error) {
-      console.error('Puan açma hatası:', error);
-      Swal.fire('Hata!', 'İşlem başarısız.', 'error');
     }
   };
 
   const handleFavoriteToggle = async (gameId) => {
     if (!loggedInUserId) {
-      Swal.fire('Uyarı!', 'Favori eklemek için giriş yapmalısınız.', 'warning');
+      Swal.fire('Warning!', 'Favori eklemek için giriş yapmalısınız.', 'warning');
       return;
     }
   
@@ -172,7 +150,7 @@ function HomePage() {
   
       if (isFavorited) {
         await axios.delete(`${process.env.REACT_APP_API_URL}/users/${loggedInUserId}/favorites/${gameId}`);
-        Swal.fire('Başarılı!', 'Favorilerden çıkarıldı.', 'success');
+        Swal.fire('Success!', 'Favorilerden çıkarıldı.', 'success');
       } else {
         await axios.post(`${process.env.REACT_APP_API_URL}/users/${loggedInUserId}/favorites/${gameId}`);
         Swal.fire('Başarılı!', 'Favorilere eklendi.', 'success');
@@ -188,311 +166,308 @@ function HomePage() {
   };
 
   return (
-    <><>
-          {/* Navbar */}
-          <nav className="navbar navbar-expand-lg navbar-dark bg-black py-2">
-              <div className="container-fluid d-flex justify-content-between align-items-center">
-
-                  {/* Sol - Kullanıcı İşlemleri */}
-                  <div className="d-flex align-items-center gap-3">
-                        {loggedInUser ? (
-                            <>
-                            <Link
-                                to={`/profile/${loggedInUser._id}`}
-                                className="profile-hover-link d-flex align-items-center text-decoration-none"
-                            >
-                                <img
-                                src={loggedInUser.photo || "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"}
-                                alt="Profil"
-                                className="profile-image"
-                                />
-                                <span className="profile-label ms-2">Profil: {loggedInUser.name}</span>
-                            </Link>
-
-                            <button className="btn btn-danger" onClick={handleLogout}>Çıkış Yap</button>
-                            </>
-                        ) : (
-                            <button className="btn btn-primary" onClick={() => navigate('/login')}>Giriş Yap</button>
-                        )}
-                        </div>
-
-
-                  {/* Orta - Logo */}
-                  <div className="mx-3 text-center">
-                      <Link to="/" className="navbar-brand">
-                          <img src="/logo.png" alt="Site Logosu" width="200" height="50" className="d-inline-block align-top" />
-                      </Link>
-                  </div>
-
-                  <div className="floating-buttons d-flex gap-2">
-                    {/* Oyun Ekle */}
-                    <button
-                        className="animated-btn"
-                        data-bs-toggle="modal"
-                        data-bs-target="#addGameModal"
-                        title="Oyun Ekle"
-                    >
-                        🎮
-                        <span className="btn-label">Oyun Ekle</span>
-                    </button>
-
-                    {/* Kullanıcı Ekle */}
-                    <button
-                        className="animated-btn"
-                        data-bs-toggle="modal"
-                        data-bs-target="#addUserModal"
-                        title="Kullanıcı Ekle"
-                    >
-                        👤
-                        <span className="btn-label">Kullanıcı Ekle</span>
-                    </button>
-                    </div>
-
-
-              </div>
-          </nav>
-</>
-<div className="container mt-4">
-  <div className="row">
-    {/* 🎮 Sol Menü */}
-    <div className="col-md-2 px-5">
-      <h6 className="text-light text-uppercase fw-bold ms-2"> Oyun Türleri</h6>
-      <ul className="genre-filter ms-2 me-2">
-        {genresList.map((genre) => (
-          <li
-            key={genre}
-            className={`list-group-item genre-item ${selectedGenre === genre ? 'active' : ''}`}
-            onClick={() => setSelectedGenre(genre)}
-          >
-            {genre}
-          </li>
-        ))}
-        <li
-          className="list-group-item genre-item reset"
-          onClick={() => setSelectedGenre(null)}
-        >
-           Tüm Oyunlar
-        </li>
-      </ul>
-    </div>
-
-    {/* 🧩 Oyunlar Alanı */}
-    <div className="col-md-10">
-      {/* 🔍 Arama Çubuğu */}
-      <div className="search-wrapper position-relative mb-4">
-        <span className="search-icon position-absolute top-50 start-0 translate-middle-y ms-3 text-secondary">
-           🔍︎
-        </span>
-        <input
-            type="text"
-            className="form-control search-box ps-5 bg-dark text-light border-0"
-            placeholder="Oyun ara..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-        />
-        </div>
-
-
-      {/* 🎴 Oyun Kartları */}
-      <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-        {currentGames.map((game) => (
-          <div key={game._id} className="col">
-            <div className="game-card position-relative overflow-hidden bg-dark text-light">
-              {/* Kartın tıklanabilir kısmı */}
-              <Link to={`/game/${game._id}`} className="text-decoration-none text-white">
-                    {/* Oyun görseli */}
-                    <img
-                    src={game.photo}
-                    alt={game.name}
-                    className="card-img-top"
-                    style={{ height: "200px", objectFit: "cover" }}
-                    />
-
-                    {/* Hover ile açılan içerik */}
-                    <div className="card-slide-content px-3 py-2">
-                    <h5 className="text-info mb-1">{game.name}</h5>
-                    <p className="small mb-0">{game.optionalFields?.about || "Açıklama bulunamadı."}</p>
-                    </div>
+    <>
+      {/* Navbar */}
+      <nav className="navbar navbar-expand-lg navbar-dark bg-black py-2">
+        <div className="container-fluid d-flex justify-content-between align-items-center">
+  
+          {/* Left - User Operations */}
+          <div className="d-flex align-items-center gap-3">
+            {loggedInUser ? (
+              <>
+                <Link
+                  to={`/profile/${loggedInUser._id}`}
+                  className="profile-hover-link d-flex align-items-center text-decoration-none"
+                >
+                  <img
+                    src={loggedInUser.photo || "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"}
+                    alt="Profile"
+                    className="profile-image"
+                  />
+                  <span className="profile-label ms-2">Profile: {loggedInUser.name}</span>
                 </Link>
-
-
-              {/* Favori / Sil Butonları */}
-              <div className="card-icons position-absolute top-0 start-0 end-0 d-flex justify-content-between p-2">
-                <button
-                  onClick={() => handleDelete(game._id)}
-                  className="btn btn-sm icon-btn bg-dark text-white"
-                  title="Sil"
+  
+                <button className="btn btn-danger" onClick={handleLogout}>Log Out</button>
+              </>
+            ) : (
+              <button className="btn btn-primary" onClick={() => navigate('/login')}>Log In</button>
+            )}
+          </div>
+  
+          {/* Middle - Logo */}
+          <div className="mx-3 text-center">
+            <Link to="/" className="navbar-brand">
+              <img src="/logo.png" alt="Site Logo" width="200" height="50" className="d-inline-block align-top" />
+            </Link>
+          </div>
+  
+          <div className="floating-buttons d-flex gap-2">
+            {/* Add Game */}
+            <button
+              className="animated-btn"
+              data-bs-toggle="modal"
+              data-bs-target="#addGameModal"
+              title="Add Game"
+            >
+              🎮
+              <span className="btn-label">Add Game</span>
+            </button>
+  
+            {/* Add User */}
+            <button
+              className="animated-btn"
+              data-bs-toggle="modal"
+              data-bs-target="#addUserModal"
+              title="Add User"
+            >
+              👤
+              <span className="btn-label">Add User</span>
+            </button>
+          </div>
+  
+        </div>
+      </nav>
+  
+      <div className="container mt-4">
+        <div className="row">
+          {/* 🎮 Left Menu */}
+          <div className="col-md-2 px-5">
+            <h6 className="text-light text-uppercase fw-bold ms-2"> Game Categories</h6>
+            <ul className="genre-filter ms-2 me-2">
+              {genresList.map((genre) => (
+                <li
+                  key={genre}
+                  className={`list-group-item genre-item ${selectedGenre === genre ? 'active' : ''}`}
+                  onClick={() => setSelectedGenre(genre)}
                 >
-                  <FaTrash />
-                </button>
-
-                <button
-                  onClick={() => handleFavoriteToggle(game._id)}
-                  className="btn btn-sm icon-btn bg-dark text-white"
-                  title="Favoriye Ekle / Çıkar"
-                >
-                  {loggedInUser?.favorites?.includes(game._id) ? (
-                    <FaHeart color="red" />
-                  ) : (
-                    <FaRegHeart color="white" />
-                  )}
-                </button>
-              </div>
+                  {genre}
+                </li>
+              ))}
+              <li
+                className="list-group-item genre-item reset"
+                onClick={() => setSelectedGenre(null)}
+              >
+                All Games
+              </li>
+            </ul>
+          </div>
+  
+          {/* 🧩 Games Area */}
+          <div className="col-md-10">
+            {/* 🔍 Search Bar */}
+            <div className="search-wrapper position-relative mb-4">
+              <span className="search-icon position-absolute top-50 start-0 translate-middle-y ms-3 text-secondary">
+                🔍︎
+              </span>
+              <input
+                type="text"
+                className="form-control search-box ps-5 bg-dark text-light border-0"
+                placeholder="Search for a game..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+  
+            {/* 🎴 Game Cards */}
+            <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+              {currentGames.map((game) => (
+                <div key={game._id} className="col">
+                  <div className="game-card position-relative overflow-hidden bg-dark text-light">
+                    {/* Clickable part of the card */}
+                    <Link to={`/game/${game._id}`} className="text-decoration-none text-white">
+                      {/* Game image */}
+                      <img
+                        src={game.photo}
+                        alt={game.name}
+                        className="card-img-top"
+                        style={{ height: "200px", objectFit: "cover" }}
+                      />
+  
+                      {/* Content shown on hover */}
+                      <div className="card-slide-content px-3 py-2">
+                        <h5 className="text-info mb-1">{game.name}</h5>
+                        <p className="small mb-0">{game.optionalFields?.about || "Description not available."}</p>
+                      </div>
+                    </Link>
+  
+                    {/* Favorite / Delete Buttons */}
+                    <div className="card-icons position-absolute top-0 start-0 end-0 d-flex justify-content-between p-2">
+                      <button
+                        onClick={() => handleDelete(game._id)}
+                        className="btn btn-sm icon-btn bg-dark text-white"
+                        title="Delete"
+                      >
+                        <FaTrash />
+                      </button>
+  
+                      <button
+                        onClick={() => handleFavoriteToggle(game._id)}
+                        className="btn btn-sm icon-btn bg-dark text-white"
+                        title="Add / Remove from Favorites"
+                      >
+                        {loggedInUser?.favorites?.includes(game._id) ? (
+                          <FaHeart color="red" />
+                        ) : (
+                          <FaRegHeart color="white" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+  
+            {/* 📄 Pagination */}
+            <div className="d-flex justify-content-center mt-4">
+              <nav>
+                <ul className="pagination pagination-sm">
+                  {Array.from({ length: Math.ceil(filteredGames.length / gamesPerPage) }).map((_, i) => (
+                    <li key={i} className={`page-item ${currentPage === i + 1 ? 'active' : ''}`}>
+                      <button className="page-link" onClick={() => setCurrentPage(i + 1)}>
+                        {i + 1}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
             </div>
           </div>
-        ))}
+        </div>
       </div>
-
-      {/* 📄 Sayfa Numaraları */}
-      <div className="d-flex justify-content-center mt-4">
-        <nav>
-          <ul className="pagination pagination-sm">
-            {Array.from({ length: Math.ceil(filteredGames.length / gamesPerPage) }).map((_, i) => (
-              <li key={i} className={`page-item ${currentPage === i + 1 ? 'active' : ''}`}>
-                <button className="page-link" onClick={() => setCurrentPage(i + 1)}>
-                  {i + 1}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </nav>
+  
+      {/* Add Game Modal */}
+      <div className="modal fade" id="addGameModal" tabIndex="-1" aria-labelledby="addGameModalLabel" aria-hidden="true">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <form onSubmit={handleSubmit}>
+              <div className="modal-header">
+                <h5 className="modal-title" id="addGameModalLabel">Add New Game</h5>
+                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div className="modal-body">
+                {/* Form Fields */}
+                <div className="mb-3">
+                  <label>Game Name</label>
+                  <input type="text" className="form-control" value={name} onChange={(e) => setName(e.target.value)} required />
+                </div>
+                <div className="mb-3">
+                  <label>Genres (separate by commas)</label>
+                  <input type="text" className="form-control" value={genres} onChange={(e) => setGenres(e.target.value)} required />
+                </div>
+                <div className="mb-3">
+                  <label>Image Link</label>
+                  <input type="text" className="form-control" value={photo} onChange={(e) => setPhoto(e.target.value)} required />
+                </div>
+                <div className="mb-3">
+                  <label>Developer</label>
+                  <input type="text" className="form-control" value={developer} onChange={(e) => setDeveloper(e.target.value)} required />
+                </div>
+                <div className="mb-3">
+                  <label>About Game</label>
+                  <input type="text" className="form-control" value={about} onChange={(e) => setAbout(e.target.value)} required />
+                </div>
+                <div className="mb-3">
+                  <label>Release Date (Optional)</label>
+                  <input type="text" className="form-control" value={releaseDate} onChange={(e) => setReleaseDate(e.target.value)} />
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" id="closeModalButton" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" className="btn btn-primary">Save</button>
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-</div>
-
-
-              {/* Oyun Ekle Modal */}
-              <div className="modal fade" id="addGameModal" tabIndex="-1" aria-labelledby="addGameModalLabel" aria-hidden="true">
-                  <div className="modal-dialog">
-                      <div className="modal-content">
-                          <form onSubmit={handleSubmit}>
-                              <div className="modal-header">
-                                  <h5 className="modal-title" id="addGameModalLabel">Yeni Oyun Ekle</h5>
-                                  <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
-                              </div>
-                              <div className="modal-body">
-                                  {/* Form Alanları */}
-                                  <div className="mb-3">
-                                      <label>Oyun İsmi</label>
-                                      <input type="text" className="form-control" value={name} onChange={(e) => setName(e.target.value)} required />
-                                  </div>
-                                  <div className="mb-3">
-                                      <label>Türler (virgülle ayır)</label>
-                                      <input type="text" className="form-control" value={genres} onChange={(e) => setGenres(e.target.value)} required />
-                                  </div>
-                                  <div className="mb-3">
-                                      <label>Görsel Linki</label>
-                                      <input type="text" className="form-control" value={photo} onChange={(e) => setPhoto(e.target.value)} required />
-                                  </div>
-                                  <div className="mb-3">
-                                      <label>Geliştirici</label>
-                                      <input type="text" className="form-control" value={developer} onChange={(e) => setDeveloper(e.target.value)} required />
-                                  </div>
-                                  <div className="mb-3">
-                                      <label>Oyun Hakkında</label>
-                                      <input type="text" className="form-control" value={about} onChange={(e) => setAbout(e.target.value)} required />
-                                  </div>
-                                  <div className="mb-3">
-                                      <label>Çıkış Tarihi (Opsiyonel)</label>
-                                      <input type="text" className="form-control" value={releaseDate} onChange={(e) => setReleaseDate(e.target.value)} />
-                                  </div>
-                              </div>
-                              <div className="modal-footer">
-                                  <button type="button" className="btn btn-secondary" id="closeModalButton" data-bs-dismiss="modal">İptal</button>
-                                  <button type="submit" className="btn btn-primary">Kaydet</button>
-                              </div>
-                          </form>
-                      </div>
-                  </div>
+  
+      {/* Add User Modal */}
+      <div className="modal fade" id="addUserModal" tabIndex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <form onSubmit={handleAddUser}>
+              <div className="modal-header">
+                <h5 className="modal-title" id="addUserModalLabel">Add New User</h5>
+                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
-
-              {/* Kullanıcı Ekle Modal */}
-              <div className="modal fade" id="addUserModal" tabIndex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
-                  <div className="modal-dialog">
-                      <div className="modal-content">
-                          <form onSubmit={handleAddUser}>
-                              <div className="modal-header">
-                                  <h5 className="modal-title" id="addUserModalLabel">Yeni Kullanıcı Ekle</h5>
-                                  <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
-                              </div>
-                              <div className="modal-body">
-                                  {/* Kullanıcı adı */}
-                                  <div className="mb-3">
-                                      <label>Kullanıcı İsmi</label>
-                                      <input
-                                          type="text"
-                                          className="form-control"
-                                          value={userName}
-                                          onChange={(e) => setUserName(e.target.value)}
-                                          required />
-                                  </div>
-
-                                  {/* Profil Fotoğrafı */}
-                                  <div className="mb-3">
-                                      <label>Profil Fotoğrafı (URL)</label>
-                                      <input
-                                          type="text"
-                                          className="form-control"
-                                          placeholder="https://..."
-                                          value={userPhoto}
-                                          onChange={(e) => setUserPhoto(e.target.value)} />
-                                  </div>
-
-                                  {/* Hakkımda */}
-                                  <div className="mb-3">
-                                      <label>Hakkımda</label>
-                                      <textarea
-                                          className="form-control"
-                                          rows="3"
-                                          placeholder="Kendiniz hakkında birkaç cümle yazabilirsiniz."
-                                          value={userAbout}
-                                          onChange={(e) => setUserAbout(e.target.value)} />
-                                  </div>
-                              </div>
-
-                              <div className="modal-footer">
-                                  <button type="button" className="btn btn-secondary" id="closeUserModalButton" data-bs-dismiss="modal">İptal</button>
-                                  <button type="submit" className="btn btn-primary">Kaydet</button>
-                              </div>
-                          </form>
-                      </div>
-                  </div>
-
+              <div className="modal-body">
+                {/* Username */}
+                <div className="mb-3">
+                  <label>Username</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={userName}
+                    onChange={(e) => setUserName(e.target.value)}
+                    required />
+                </div>
+  
+                {/* Profile Picture */}
+                <div className="mb-3">
+                  <label>Profile Picture (URL)</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="https://..."
+                    value={userPhoto}
+                    onChange={(e) => setUserPhoto(e.target.value)} />
+                </div>
+  
+                {/* About Me */}
+                <div className="mb-3">
+                  <label>About Me</label>
+                  <textarea
+                    className="form-control"
+                    rows="3"
+                    placeholder="You can write a few sentences about yourself."
+                    value={userAbout}
+                    onChange={(e) => setUserAbout(e.target.value)} />
+                </div>
               </div>
+  
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" id="closeUserModalButton" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" className="btn btn-primary">Save</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+  
       <footer className="navbar navbar-dark bg-black justify-content-center py-4 mt-5">
-              <div className="d-flex flex-column align-items-center gap-3">
-                  <div className="d-flex align-items-center gap-3">
-                      <img
-                          src="/logo.png"
-                          alt="Footer Logo"
-                          style={{
-                              height: '40px',
-                              filter: 'brightness(0.8)'
-                          }} />
-                      <span
-                          className="text-muted-white"
-                          style={{
-                              fontFamily: 'Arial',
-                              fontSize: '1.2rem',
-                              letterSpacing: '1.2px'
-                          }}
-                      >
-                          OYUN PLATFORMU
-                      </span>
-                  </div>
-
-                  <div className="text-center">
-                      <p className="mb-1 text-secondary">
-                          © {new Date().getFullYear()} Tüm hakları saklıdır.
-                      </p>
-                      <p className="mb-0 text-secondary">
-                            Proje ürünüdür.
-                      </p>
-                  </div>
-              </div>
-          </footer></>
+        <div className="d-flex flex-column align-items-center gap-3">
+          <div className="d-flex align-items-center gap-3">
+            <img
+              src="/logo.png"
+              alt="Footer Logo"
+              style={{
+                height: '40px',
+                filter: 'brightness(0.8)'
+              }} />
+            <span
+              className="text-muted-white"
+              style={{
+                fontFamily: 'Arial',
+                fontSize: '1.2rem',
+                letterSpacing: '1.2px'
+              }}
+            >
+              GAME PLATFORM
+            </span>
+          </div>
+  
+          <div className="text-center">
+            <p className="mb-1 text-secondary">
+              © {new Date().getFullYear()} All rights reserved.
+            </p>
+            <p className="mb-0 text-secondary">
+              Project product.
+            </p>
+          </div>
+        </div>
+      </footer>
+    </>
   );
+  
 }
 
 export default HomePage;

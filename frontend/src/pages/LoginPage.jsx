@@ -25,8 +25,8 @@ function LoginPage() {
     if (!selectedUserId) {
       Swal.fire({
         icon: 'warning',
-        title: 'Uyarı',
-        text: 'Lütfen bir kullanıcı seçin!',
+        title: 'Warning',
+        text: 'Please select one user!',
         background: '#1a1a1a',
         color: 'white',
         confirmButtonColor: '#0d6efd'
@@ -37,8 +37,8 @@ function LoginPage() {
     localStorage.setItem('loggedInUserId', selectedUserId);
     Swal.fire({
       icon: 'success',
-      title: 'Başarılı',
-      text: 'Giriş yapıldı!',
+      title: 'Success',
+      text: 'Logged In!',
       background: '#1a1a1a',
       color: 'white',
       confirmButtonColor: '#0d6efd'
@@ -47,72 +47,73 @@ function LoginPage() {
     });
   };
 
-    return (
-      <div className="bg-dark text-light min-vh-100 d-flex align-items-center">
-        <div className="container">
-          <div className="row justify-content-center">
-            <div className="col-md-8 col-lg-6">
+  return (
+    <div className="bg-dark text-light min-vh-100 d-flex align-items-center">
+      <div className="container">
+        <div className="row justify-content-center">
+          <div className="col-md-8 col-lg-6">
+            
+            {/* Login Card */}
+            <div className="glassmorphism-card p-5 rounded-4 shadow-lg">
               
-              {/* Login Card */}
-              <div className="glassmorphism-card p-5 rounded-4 shadow-lg">
-                
-                {/* Logo Eklendi */}
-                <div className="text-center mb-4">
-                  <img
-                    src="/logo.png"
-                    alt="Site Logosu"
-                    style={{ 
-                      height: '80px',
-                      filter: 'brightness(0.9) drop-shadow(0 0 8px rgba(255,255,255,0.2))'
-                    }}
-                    className="mb-3"
-                  />
-                </div>
+              {/* Logo Added */}
+              <div className="text-center mb-4">
+                <img
+                  src="/logo.png"
+                  alt="Site Logo"
+                  style={{ 
+                    height: '80px',
+                    filter: 'brightness(0.9) drop-shadow(0 0 8px rgba(255,255,255,0.2))'
+                  }}
+                  className="mb-3"
+                />
+              </div>
   
-                <div className="text-center mb-5">
-                  <i className="bi bi-person-circle display-1 text-primary mb-3"></i>
-                  <h1 className="h2 fw-bold mb-3">Hesabınıza Giriş Yapın</h1>
-                  <p className="text-muted-white">Lütfen listeden kullanıcınızı seçin</p>
-                </div>
+              <div className="text-center mb-5">
+                <i className="bi bi-person-circle display-1 text-primary mb-3"></i>
+                <h1 className="h2 fw-bold mb-3">Log in to Your Account</h1>
+                <p className="text-muted-white">Please select your user from the list</p>
+              </div>
   
-                <div className="mb-4">
-                  <label className="form-label text-light mb-3 fs-5">
-                    <i className="bi bi-person-fill me-2"></i>
-                    Kullanıcı Seçin
-                  </label>
-                  <select
-                    className="form-select bg-dark text-light border-secondary py-3 custom-select"
-                    value={selectedUserId}
-                    onChange={(e) => setSelectedUserId(e.target.value)}
-                    style={{ fontSize: '1.1rem' }}
-                  >
-                    <option value="" className="bg-secondary text-light">
-                      -- Seçiniz --
+              <div className="mb-4">
+                <label className="form-label text-light mb-3 fs-5">
+                  <i className="bi bi-person-fill me-2"></i>
+                  Select User
+                </label>
+                <select
+                  className="form-select bg-dark text-light border-secondary py-3 custom-select"
+                  value={selectedUserId}
+                  onChange={(e) => setSelectedUserId(e.target.value)}
+                  style={{ fontSize: '1.1rem' }}
+                >
+                  <option value="" className="bg-secondary text-light">
+                    -- Select -- 
+                  </option>
+                  {users.map((user) => (
+                    <option 
+                      key={user._id} 
+                      value={user._id}
+                      className="bg-dark text-light hover-option"
+                    >
+                      {user.name}
                     </option>
-                    {users.map((user) => (
-                      <option 
-                        key={user._id} 
-                        value={user._id}
-                        className="bg-dark text-light hover-option"
-                      >
-                        {user.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <button 
+                  ))}
+                </select>
+              </div>
+              <button 
                 onClick={handleLogin} 
                 className="btn btn-primary w-100 py-3 fw-bold hover-effect"
               >
                 <i className="bi bi-box-arrow-in-right me-2"></i>
-                Giriş Yap
+                Log In
               </button>
-              </div>
             </div>
           </div>
         </div>
       </div>
-    );
+    </div>
+  );
+  
   }
 
 export default LoginPage;

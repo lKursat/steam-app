@@ -41,13 +41,13 @@ function GameDetailPage() {
 
   const findUserNameById = (id) => {
     const user = users.find((u) => u._id === id);
-    return user ? user.name : 'Bilinmeyen Kullanıcı';
+    return user ? user.name : 'Unknown User';
   };
 
   const handleAddComment = async (e) => {
     e.preventDefault();
     if (!loggedInUserId) {
-      Swal.fire('Hata!', 'Lütfen giriş yapın!', 'error');
+      Swal.fire('Error!', 'Please login in!', 'error');
       return;
     }
     try {
@@ -93,59 +93,58 @@ function GameDetailPage() {
           <a href="/" className="navbar-brand d-flex align-items-center">
             <img
               src="/logo.png"
-              alt="Site Logosu"
+              alt="Site Logo"
               style={{ height: '50px' }}
               className="d-inline-block align-top"
             />
           </a>
         </nav>
     
-        {/* İçerik */}
+        {/* Content */}
         <div className="container mt-5">
-        <Carousel className="mb-4 rounded overflow-hidden shadow">
-          {game.photos && game.photos.length > 0 ? (
-            game.photos.map((photo, idx) => (
-              <Carousel.Item key={idx}>
+          <Carousel className="mb-4 rounded overflow-hidden shadow">
+            {game.photos && game.photos.length > 0 ? (
+              game.photos.map((photo, idx) => (
+                <Carousel.Item key={idx}>
+                  <img
+                    className="d-block w-100"
+                    src={photo}
+                    alt={`slide-${idx}`}
+                    style={{ height: '400px', objectFit: 'cover' }}
+                  />
+                </Carousel.Item>
+              ))
+            ) : (
+              <Carousel.Item>
                 <img
                   className="d-block w-100"
-                  src={photo}
-                  alt={`slide-${idx}`}
+                  src={game.photo} // Fallback main image
+                  alt="Main image"
                   style={{ height: '400px', objectFit: 'cover' }}
                 />
               </Carousel.Item>
-            ))
-          ) : (
-            <Carousel.Item>
-              <img
-                className="d-block w-100"
-                src={game.photo} // Ana fotoğraf fallback
-                alt="Ana görsel"
-                style={{ height: '400px', objectFit: 'cover' }}
-              />
-            </Carousel.Item>
-          )}
-        </Carousel>
-
-          
-          <div className="detail-header">
-        <h2>{game.name}</h2>
-        {game.optionalFields?.developer && (
-          <p><strong>Geliştirici:</strong> {game.optionalFields.developer}</p>
-        )}
-        {game.optionalFields?.releaseDate && (
-          <p><strong>Çıkış Tarihi:</strong> {game.optionalFields.releaseDate}</p>
-        )}
-      </div>
-
-      <div className="detail-header"><h2> Oyun Hakkında</h2>
-      <p>{game.optionalFields?.about || 'Açıklama yok.'}</p></div>
-
-      <div className="detail-header"> <h2> Ortalama Puan</h2>
-      <h4 className="text-warning">{averageRating} ⭐</h4></div>
+            )}
+          </Carousel>
     
-          {/* Yorumlar */}
+          <div className="detail-header">
+            <h2>{game.name}</h2>
+            {game.optionalFields?.developer && (
+              <p><strong>Developer:</strong> {game.optionalFields.developer}</p>
+            )}
+            {game.optionalFields?.releaseDate && (
+              <p><strong>Release Date:</strong> {game.optionalFields.releaseDate}</p>
+            )}
+          </div>
+    
+          <div className="detail-header"><h2> About the Game</h2>
+          <p>{game.optionalFields?.about || 'No description available.'}</p></div>
+    
+          <div className="detail-header"> <h2> Average Rating</h2>
+          <h4 className="text-warning">{averageRating} ⭐</h4></div>
+    
+          {/* Comments */}
           <div className="mt-5">
-            <h4 className="text-light">💭 Kullanıcı Yorumları</h4>
+            <h4 className="text-light">💭 User Comments</h4>
             {game.comments && game.comments.length > 0 ? (
               <ul className="list-unstyled">
                 {game.comments.map((comment, index) => {
@@ -158,24 +157,24 @@ function GameDetailPage() {
                       className="d-flex align-items-center justify-content-between p-3 mb-3 rounded"
                       style={{ backgroundColor: "#1e1e1e" }}
                     >
-                      {/* Sol: Kullanıcı */}
+                      {/* Left: User */}
                       <div className="d-flex align-items-center" style={{ width: '30%' }}>
                         <img
                           src={user?.photo || 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png'}
-                          alt={user?.name || 'Kullanıcı'}
+                          alt={user?.name || 'User'}
                           className="rounded-circle me-3"
                           style={{ width: '60px', height: '60px', objectFit: 'cover' }}
                         />
-                        <div className="text-light fw-bold">{user?.name || 'Bilinmeyen'}</div>
+                        <div className="text-light fw-bold">{user?.name || 'Unknown'}</div>
                       </div>
     
-                      {/* Orta: Yorum */}
+                      {/* Middle: Comment */}
                       <div className="text-light" style={{ width: '50%' }}>
                         <p className="mb-1">{comment.comment}</p>
-                        <small className="text-muted-white">🕒 {comment.playTime} saat oynadı</small>
+                        <small className="text-muted-white">🕒 {comment.playTime} hours played</small>
                       </div>
     
-                      {/* Sağ: Yıldızlar + Sil */}
+                      {/* Right: Stars + Delete */}
                       <div className="d-flex flex-column align-items-end" style={{ width: '20%' }}>
                         <div>
                           {[...Array(5)].map((_, i) => (
@@ -191,7 +190,7 @@ function GameDetailPage() {
                           <button
                             onClick={() => handleDeleteComment(comment.userId)}
                             className="btn btn-sm icon-btn bg-dark text-white"
-                             title="Sil"
+                             title="Delete"
                           >
                             <FaTrash />
                           </button>
@@ -202,17 +201,17 @@ function GameDetailPage() {
                 })}
               </ul>
             ) : (
-              <p className="text-muted-white">Henüz yorum yapılmamış.</p>
+              <p className="text-muted-white">No comments yet.</p>
             )}
           </div>
     
-          {/* Yorum ve Puan Ekleme Formu */}
+          {/* Comment and Rating Form */}
           {loggedInUserId ? (
             <div className="mt-5 p-4 rounded" style={{ backgroundColor: '#1e1e1e' }}>
-              <h5 className="text-light mb-4">💬 Yorum Yap</h5>
+              <h5 className="text-light mb-4">💬 Leave a Comment</h5>
               <form onSubmit={handleAddComment}>
                 <div className="mb-3">
-                  <label className="form-label text-light">Yorum</label>
+                  <label className="form-label text-light">Comment</label>
                   <textarea
                     className="form-control bg-dark text-light border-0"
                     value={newComment}
@@ -223,7 +222,7 @@ function GameDetailPage() {
                 </div>
     
                 <div className="mb-3">
-                  <label className="form-label text-light">Oynama Süresi (saat)</label>
+                  <label className="form-label text-light">Play Time (hours)</label>
                   <input
                     type="number"
                     className="form-control bg-dark text-light border-0"
@@ -234,16 +233,16 @@ function GameDetailPage() {
                 </div>
     
                 <div className="mb-3">
-                  <label className="form-label text-light">Puan</label>
+                  <label className="form-label text-light">Rating</label>
                   <StarRating rating={newRating} setRating={setNewRating} />
                 </div>
     
-                <button type="submit" className="btn btn-success">Yorumu Gönder</button>
+                <button type="submit" className="btn btn-success">Submit Comment</button>
               </form>
             </div>
           ) : (
             <div className="alert alert-warning mt-4">
-              ➡️ Yorum yapabilmek için önce <strong>giriş yapmalısın!</strong>
+              ➡️ You must <strong>log in</strong> to leave a comment!
             </div>
           )}
         </div>
@@ -258,16 +257,17 @@ function GameDetailPage() {
                 style={{ height: '40px', filter: 'brightness(0.8)' }}
               />
               <span className="text-muted-white" style={{ fontFamily: 'Arial', fontSize: '1.2rem', letterSpacing: '1.2px' }}>
-                OYUN PLATFORMU
+                GAME PLATFORM
               </span>
             </div>
             <div className="text-center">
-              <p className="mb-1 text-secondary">© {new Date().getFullYear()} Tüm hakları saklıdır</p>
-              <p className="mb-0 text-secondary">Proje ürünüdür.</p>
+              <p className="mb-1 text-secondary">© {new Date().getFullYear()} All rights reserved</p>
+              <p className="mb-0 text-secondary">This is a project product.</p>
             </div>
           </div>
         </footer>
       </>
     );
+    
 }
 export default GameDetailPage;
