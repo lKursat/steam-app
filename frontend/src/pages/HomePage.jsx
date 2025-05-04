@@ -21,7 +21,7 @@ function HomePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const gamesPerPage = 12;
-  const genresList = ["Indie", "RPG", "Action", "Strategy", "Adventure", "Massively Multiplayer", "Casual", "Simulation"];
+  const genresList = ["Action", "Adventure", "Casual", "Indie", "Massively Multiplayer", "RPG", "Simulation", "Strategy"];
   const filteredGames = games.filter((game) => {
     const matchesGenre = selectedGenre ? game.genres.includes(selectedGenre) : true;
     const matchesSearch = game.name.toLowerCase().includes(searchQuery.toLowerCase());
