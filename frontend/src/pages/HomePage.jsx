@@ -231,8 +231,8 @@ function HomePage() {
       <div className="container mt-4">
         <div className="row">
           {/* 🎮 Left Menu */}
-          <div className="col-md-2 px-5">
-            <h6 className="text-light text-uppercase fw-bold ms-2"> Game Categories</h6>
+          <div className="col-md-2 px-4">
+            <h6 className="text-light text-uppercase fw-bold ms-2">Game Categories</h6>
             <ul className="genre-filter ms-2 me-2">
               {genresList.map((genre) => (
                 <li
