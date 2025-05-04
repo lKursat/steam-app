@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useMemo } from 'react';
 import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
@@ -40,6 +40,15 @@ function UserProfilePage() {
       console.error('Oyunları çekme hatası:', error);
     }
   };
+  const mostPlayedGame = useMemo(() => {
+    if (user && user.favorites && user.favorites.length > 0) {
+      return user.favorites.reduce((prev, current) => {
+        return (prev.playTime || 0) > (current.playTime || 0) ? prev : current;
+      });
+    }
+    return null;
+  }, [user]);
+
 
   const handleSave = async () => {
     try {
@@ -127,6 +136,26 @@ function UserProfilePage() {
           <Button variant="primary" onClick={handleSave}>Kaydet</Button>
         </Modal.Footer>
       </Modal>
+    {/* En Çok Oynanan Oyun */}
+    {mostPlayedGame && (
+      <div className="container mt-5">
+        <div className="card bg-dark text-light rounded-4 shadow-lg p-4">
+          <h4 className="text-info mb-2">🎮 En Çok Oynanan Oyun</h4>
+          <div className="d-flex align-items-center">
+            <img
+              src={mostPlayedGame.photo || '/default-game.png'}
+              alt={mostPlayedGame.gameName}
+              className="rounded-3 me-3"
+              style={{ width: '100px', height: '100px', objectFit: 'cover' }}
+            />
+            <div>
+              <h5 className="mb-1">{mostPlayedGame.gameName}</h5>
+              <small className="text-muted">{mostPlayedGame.playTime} saat oynanmış</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
 
 {/* Favori Oyunlar */}
 <div className="container mt-5">
@@ -163,6 +192,27 @@ function UserProfilePage() {
   </div>
 </div>
 
+    {/* Yorumlar */}
+    <div className="container mt-5">
+      <h4 className="text-light mb-4">Yorumlar</h4>
+      {user.comments && user.comments.length > 0 ? (
+        user.comments.map((comment, index) => (
+          <div
+            key={index}
+            className="card bg-dark text-light shadow-sm mb-3 p-3 rounded-4"
+            style={{ borderLeft: '5px solid #17a2b8' }}
+          >
+            <div className="d-flex justify-content-between">
+              <strong className="text-info">{comment.userName || 'Kullanıcı'}</strong>
+              <span className="text-muted small">{comment.playTime} saat</span>
+            </div>
+            <p className="mt-2 mb-0 fst-italic text-light">{comment.comment}</p>
+          </div>
+        ))
+      ) : (
+        <p className="text-secondary">Henüz yorum yapılmamış.</p>
+      )}
+    </div>
 
 
       {/* Footer */}

@@ -20,7 +20,7 @@ function HomePage() {
   const [selectedGenre, setSelectedGenre] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const gamesPerPage = 12;
+  const gamesPerPage = 15;
   const genresList = ["Action", "Adventure", "Casual", "Indie", "Massively Multiplayer", "RPG", "Simulation", "Strategy"];
   const filteredGames = games.filter((game) => {
     const matchesGenre = selectedGenre ? game.genres.includes(selectedGenre) : true;
@@ -487,7 +487,7 @@ function HomePage() {
                           © {new Date().getFullYear()} Tüm hakları saklıdır.
                       </p>
                       <p className="mb-0 text-secondary">
-                           Kürşat Babanın Proje ürünüdür.
+                            Proje ürünüdür.
                       </p>
                   </div>
               </div>
