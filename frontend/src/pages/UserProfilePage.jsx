@@ -138,7 +138,7 @@ function UserProfilePage() {
           <div className="card bg-dark text-light h-100 d-flex flex-row overflow-hidden rounded-4 shadow-lg">
             {/* Oyun resmi */}
             <img
-              src={game.imageUrl || '/default-game.png'}
+              src={game.photo || '/default-game.png'}
               className="img-fluid"
               style={{ width: '150px', objectFit: 'cover' }}
               alt={game.name}

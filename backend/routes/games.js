@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const Game = require('../models/Game');
 const User = require('../models/User');
-console.log("Game model tipi:", Game);
+const Comment = require('../models/Comment');
+
 
 // Oyun Ekle
 router.post('/', async (req, res) => {
@@ -19,7 +20,7 @@ router.post('/', async (req, res) => {
       photo,
       optionalFields,
       playTime: 0,
-      ratingEnabled: true, // puanlama ve yorum aktif başlıyor
+      ratingEnabled: true, 
       comments: [],
       ratings: []
     });
@@ -28,6 +29,29 @@ router.post('/', async (req, res) => {
     res.status(201).json(newGame);
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+});
+
+router.put('/:id', async (req, res) => {
+  try {
+    const { name, genres, photo, optionalFields } = req.body;
+    const updatedGame = await Game.findByIdAndUpdate(
+      req.params.id,
+      {
+        name,
+        genres,
+        photo,
+        optionalFields
+      },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedGame) {
+      return res.status(404).json({ error: 'Oyun bulunamadı' });
+    }
+    res.json(updatedGame);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
   }
 });
 
@@ -83,66 +107,60 @@ router.get('/:id', async (req, res) => {
 });
 
 // Bir oyuna kullanıcı yorum ve puan ekleme
-// Oyun yorumu ekleme
+// POST /games/:id/comment
 router.post('/:id/comment', async (req, res) => {
   try {
-    const { id } = req.params; // Game ID
+    const { id } = req.params;
     const { userId, comment, rating, playTime } = req.body;
 
     const game = await Game.findById(id);
     const user = await User.findById(userId);
 
-    if (!game) return res.status(404).json({ error: 'Oyun bulunamadı' });
-    if (!user) return res.status(404).json({ error: 'Kullanıcı bulunamadı' });
-
-    // Kullanıcının ID'si yoksa veya eksikse hata verelim
-    if (!userId) {
-      return res.status(400).json({ error: 'Kullanıcı ID eksik.' });
+    if (!game || !user) {
+      return res.status(404).json({ error: 'Oyun veya kullanıcı bulunamadı!' });
     }
 
-    // Eğer yorum daha önce yapılmışsa güncelle
-    const existingGameCommentIndex = game.comments.findIndex(c => c.userId?.toString() === userId.toString());
-
+    // Game tarafına yorum ve puan ekle
+    const existingGameCommentIndex = game.comments.findIndex(c => c.userId?.toString() === userId);
     if (existingGameCommentIndex !== -1) {
-      game.comments[existingGameCommentIndex].comment = comment;
-      game.comments[existingGameCommentIndex].playTime = playTime;
+      game.comments[existingGameCommentIndex] = { userId, comment, playTime };
     } else {
       game.comments.push({ userId, comment, playTime });
     }
 
-    // Eğer puan daha önce verilmişse güncelle
-    const existingRatingIndex = game.ratings.findIndex(r => r.userId?.toString() === userId.toString());
-
+    const existingRatingIndex = game.ratings.findIndex(r => r.userId?.toString() === userId);
     if (existingRatingIndex !== -1) {
       game.ratings[existingRatingIndex].rating = rating;
     } else {
       game.ratings.push({ userId, rating });
     }
 
-    // Kullanıcının yorumlarına da ekle
-    const existingUserCommentIndex = user.comments.findIndex(c => c.gameName === game.name);
+    // Comment modeline ekle
+    const newComment = new Comment({
+      gameName: game.name,
+      text: comment,
+      rating: rating,
+      playTime: playTime
+    });
 
-    if (existingUserCommentIndex !== -1) {
-      user.comments[existingUserCommentIndex].text = comment;
-      user.comments[existingUserCommentIndex].playTime = playTime;
-    } else {
-      user.comments.push({
-        gameName: game.name,
-        text: comment,
-        playTime
-      });
-    }
+    await newComment.save();
+    user.comments.push(newComment._id);
 
+    // Kaydet
     await game.save();
     await user.save();
 
-    res.status(201).json({ message: 'Yorum ve puan başarıyla eklendi.' });
+    res.status(201).json({ message: 'Yorum ve puan başarıyla eklendi!' });
 
   } catch (err) {
-    console.error('Yorum ekleme hatası:', err);
-    res.status(500).json({ error: err.message });
+    console.error("Hata Detayları:", err);
+    res.status(500).json({ 
+      error: err.message,
+      stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+    });
   }
 });
+
 
 
 //  Yorumları Silme
@@ -163,36 +181,6 @@ router.delete('/:gameId/comment/:userId', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-//Yorum Güncelleme 
-
-router.put('/:gameId/comment/:userId', async (req, res) => {
-  try {
-    const { gameId, userId } = req.params;
-    const { comment, rating, playTime } = req.body;
-    const game = await Game.findById(gameId);
-
-    if (!game) return res.status(404).json({ error: 'Oyun bulunamadı' });
-
-    const userComment = game.comments.find(c => c.userId === userId);
-    const userRating = game.ratings.find(r => r.userId === userId);
-
-    if (userComment) {
-      userComment.comment = comment;
-      userComment.playTime = playTime;
-    }
-    if (userRating) {
-      userRating.rating = rating;
-    }
-
-    await game.save();
-    res.json({ message: 'Yorum ve puan güncellendi.' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-
 
 // Tüm oyunları getir
 router.get('/', async (req, res) => {
